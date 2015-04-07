@@ -1,1 +1,0 @@
-A [ko-grid](https://github.com/benschulz/ko-grid) extension to select rows.
