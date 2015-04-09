@@ -17,6 +17,8 @@ ko_grid_selection_selection = function (module, ko, koGrid) {
     Constructor: function SekectionExtension(bindingValue, config, grid) {
       var allowMultiSelection = !!(bindingValue['allowMultiSelection'] || config['allowMultiSelection']);
       var evaluateRowClicks = !!(bindingValue['evaluateRowClicks'] || config['evaluateRowClicks']);
+      var selectedEntriesIds = bindingValue['selectedEntriesIds'] || ko.observableArray([]);
+      var selectedEntryId = bindingValue['selectedEntryId'] || ko.observable(null);
       var allSelected = false;
       var column = grid.columns.add({
         key: 'selection',
@@ -25,7 +27,6 @@ ko_grid_selection_selection = function (module, ko, koGrid) {
       });
       var header = grid.headers.forColumn(column);
       var isSelected = {};
-      var selectedEntriesIds = bindingValue['selectedEntriesIds'] || ko.observableArray([]);
       var primaryKey = grid.primaryKey;
       column.overrideValueBinding(function (b) {
         return {
@@ -101,9 +102,10 @@ ko_grid_selection_selection = function (module, ko, koGrid) {
         // track dependency
         return isSelected[grid.data.observableValueSelector(ko.unwrap(row[primaryKey]))] ? ['selected'] : [];
       });
-      var allSelectedComputer = ko.computed(function () {
+      var stateComputer = ko.computed(function () {
         var selectedEntryCount = selectedEntriesIds().length;
         var filteredSize = grid.data.view.filteredSize();
+        selectedEntryId(selectedEntryCount ? selectedEntriesIds()[selectedEntryCount - 1] : null);
         // TODO This is /broken/! Two sets being of equal size does not imply they are equal.
         allSelected = !!selectedEntryCount && selectedEntryCount === filteredSize;
         var headerElement = header.element(), checkbox = headerElement && headerElement.querySelector('.' + SELECTION_CLASS);
@@ -114,7 +116,7 @@ ko_grid_selection_selection = function (module, ko, koGrid) {
       });
       this.dispose = function () {
         headerElementSubscription.dispose();
-        allSelectedComputer.dispose();
+        stateComputer.dispose();
       };
     }
   });

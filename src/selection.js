@@ -9,6 +9,8 @@ define(['module', 'knockout', 'ko-grid'], function (module, ko, koGrid) {
         Constructor: function SekectionExtension(bindingValue, config, grid) {
             var allowMultiSelection = !!(bindingValue['allowMultiSelection'] || config['allowMultiSelection']);
             var evaluateRowClicks = !!(bindingValue['evaluateRowClicks'] || config['evaluateRowClicks']);
+            var selectedEntriesIds = bindingValue['selectedEntriesIds'] || ko.observableArray([]);
+            var selectedEntryId = bindingValue['selectedEntryId'] || ko.observable(null);
             var allSelected = false;
 
             var column = grid.columns.add({
@@ -19,7 +21,6 @@ define(['module', 'knockout', 'ko-grid'], function (module, ko, koGrid) {
             var header = grid.headers.forColumn(column);
 
             var isSelected = {};
-            var selectedEntriesIds = bindingValue['selectedEntriesIds'] || ko.observableArray([]);
 
             var primaryKey = grid.primaryKey;
 
@@ -100,10 +101,11 @@ define(['module', 'knockout', 'ko-grid'], function (module, ko, koGrid) {
                 return isSelected[grid.data.observableValueSelector(ko.unwrap(row[primaryKey]))] ? ['selected'] : [];
             });
 
-            var allSelectedComputer = ko.computed(() => {
+            var stateComputer = ko.computed(() => {
                 var selectedEntryCount = selectedEntriesIds().length;
                 var filteredSize = grid.data.view.filteredSize();
 
+                selectedEntryId(selectedEntryCount ? selectedEntriesIds()[selectedEntryCount - 1] : null);
                 // TODO This is /broken/! Two sets being of equal size does not imply they are equal.
                 allSelected = !!selectedEntryCount && selectedEntryCount === filteredSize;
 
@@ -117,7 +119,7 @@ define(['module', 'knockout', 'ko-grid'], function (module, ko, koGrid) {
 
             this.dispose = function () {
                 headerElementSubscription.dispose();
-                allSelectedComputer.dispose();
+                stateComputer.dispose();
             };
         }
     });
