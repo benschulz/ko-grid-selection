@@ -9,7 +9,7 @@ ko_grid_selection_selection = function (module, ko, koGrid) {
   var extensionId = 'ko-grid-selection'.indexOf('/') < 0 ? 'ko-grid-selection' : 'ko-grid-selection'.substring(0, 'ko-grid-selection'.indexOf('/'));
   var SELECTION_CLASS = 'ko-grid-selection-element';
   koGrid.defineExtension(extensionId, {
-    Constructor: function SekectionExtension(bindingValue, config, grid) {
+    Constructor: function SelectionExtension(bindingValue, config, grid) {
       var allowMultiSelection = !!(bindingValue['allowMultiSelection'] || config['allowMultiSelection']);
       var evaluateRowClicks = !!(bindingValue['evaluateRowClicks'] || config['evaluateRowClicks']);
       var selectedEntriesIds = bindingValue['selectedEntriesIds'] || ko.observableArray([]);

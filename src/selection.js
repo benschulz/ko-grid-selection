@@ -6,7 +6,7 @@ define(['module', 'knockout', 'ko-grid'], function (module, ko, koGrid) {
     var SELECTION_CLASS = 'ko-grid-selection-element';
 
     koGrid.defineExtension(extensionId, {
-        Constructor: function SekectionExtension(bindingValue, config, grid) {
+        Constructor: function SelectionExtension(bindingValue, config, grid) {
             var allowMultiSelection = !!(bindingValue['allowMultiSelection'] || config['allowMultiSelection']);
             var evaluateRowClicks = !!(bindingValue['evaluateRowClicks'] || config['evaluateRowClicks']);
             var selectedEntriesIds = bindingValue['selectedEntriesIds'] || ko.observableArray([]);
